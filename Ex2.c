@@ -57,17 +57,17 @@ int polindrome(int num)
 }
 
 int perfectNum(int num)
-{ int sum=0,mul=1,i;
+{ int sum=0,i;
 		
 	for(i=1;i<num;i++)
 	{	if(num%i==0)
 		{
 			sum=sum+i;
-                	mul=mul*i;
+                	
 		}		
 
 	}
-	if(sum==mul)
+	if(sum==num)
         {
     		return 1;
 	}
