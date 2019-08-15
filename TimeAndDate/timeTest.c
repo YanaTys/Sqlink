@@ -64,9 +64,13 @@ int main()
 	scanf("%d",&format);
 
 	printDate(cd,format);
-	free(ct);
-	free(ct2);
-	free(cd);
-	free(cd2);
+	if(ct!=NULL)
+		free(ct);
+	if(ct2!=NULL)
+		free(ct2);
+	if(cd!=NULL)
+		free(cd);
+	if(cd2!=NULL)
+		free(cd2);
 return 0;	
 }
