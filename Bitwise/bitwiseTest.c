@@ -18,8 +18,8 @@ int main()
 		if(n!=-1)
 		{	printf("Enter funcNum\n0-bitOn\n1-bitOff\n2 bitStatus\n");
 			scanf("%d",&funcNum);
-			printf("%d\n",bf[funcNum](bm,n));
 			printBitMap(bm);
+			printf("answer=%d\n",bf[funcNum](bm,n));
 		}
 	}
 	while(n!=-1);
