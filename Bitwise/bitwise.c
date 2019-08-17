@@ -5,24 +5,26 @@
 
 static void ItoB(  int num)
 {
-int i=num/2;
+int i=0,j=0;
 
-char arr[100];
+char arr[256];
 if (num==0)
 {
 	arr[0]='0';
 	arr[1]='\0';
 }
-for(i=0;i<32;i++)
+while(num>0)
 {
 	arr[i]=num%2+'0';
 	num=num/2;
+	i++;
 }
 arr[i]='\0';
-for(i=strlen(arr)-1;i>=0;i--)
-{
-	printf("%c",arr[i]);
-
+for(i=32;i>=0;i--)
+{	if(i<=strlen(arr))
+		printf("%c",arr[i]);
+	else 
+		printf("%c",'0');
 }
 return;
 }
@@ -35,7 +37,7 @@ bitMap_t* createBitMap(int nf)
 	if(bm ==NULL)
 		return NULL;
 	size=(nf%32>0?nf/32+1:nf/32);
-	bm->m_bitArr=calloc(size,sizeof(int));
+	bm->m_bitArr=calloc(size,sizeof(unsigned int));
 	if(bm->m_bitArr ==NULL)
 		{free(bm);
 		return NULL;}
@@ -45,14 +47,14 @@ bitMap_t* createBitMap(int nf)
 }
 
 void printBitMap(bitMap_t* bm)
-{	int i,size,num;
-	
+{	int i,size;
+	unsigned int num;
 	size=(bm->m_nf%32>0?bm->m_nf/32+1:bm->m_nf/32);
 	if(bm !=NULL)
 	{	printf("nf=%d\n",bm->m_nf);
 		
-		for(i=0;i<size;i++)
-		{	num=((int)bm->m_bitArr[i]);
+		for(i=size-1;i>=0;i--)
+		{	num=(bm->m_bitArr[i]);
 			ItoB(num);
 			
 		}
@@ -65,10 +67,10 @@ void printBitMap(bitMap_t* bm)
 
 int bitOn(bitMap_t* bm,int n)
 {	int i,index;
-	int num=1;
+	unsigned int num=1;
 	if(n>bm->m_nf)
 		return -1;
-	i=(n%32>0?n/32+1:n/32);
+	i=(n%32>0?n/32:n/32-1);
 	index=n%32>0?n%32:32;	
 	num<<=(index-1);	
 	bm->m_bitArr[i]=bm->m_bitArr[i]|num;
@@ -77,10 +79,10 @@ int bitOn(bitMap_t* bm,int n)
 
 int bitOff(bitMap_t* bm,int n)
 {	int i,index;
-	int num=1;
+	unsigned int num=1;
 	if(n>bm->m_nf)
 		return -1;
-	i=(n%32>0?n/32+1:n/32);
+	i=(n%32>0?n/32:n/32-1);
 	index=n%32>0?n%32:32;	
 	num<<=index-1;
 	num=~num;	
@@ -90,10 +92,10 @@ int bitOff(bitMap_t* bm,int n)
 int bitStatus(bitMap_t* bm,int n)
 {
 	int i,index;
-	int num=1;
+	unsigned int num=1;
 	if(n>bm->m_nf)
 		return -1;
-	i=(n%32>0?n/32+1:n/32);
+	i=(n%32>0?n/32:n/32-1);
 	index=n%32>0?n%32:32;	
 	num<<=index-1;	
 	num=bm->m_bitArr[i]&num;

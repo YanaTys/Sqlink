@@ -2,7 +2,7 @@
 #define BITM_T
 typedef struct {
 int m_nf;
-int* m_bitArr;
+unsigned int* m_bitArr;
 } bitMap_t;
 
 typedef int (*bitsFunc)(bitMap_t*,int) ;
