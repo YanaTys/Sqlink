@@ -3,7 +3,7 @@
 #include <string.h>
 #include "bitwise.h"
 
-static void ItoB(  int num)
+static void ItoB( unsigned int num)
 {
 int i=0,j=0;
 
