@@ -15,7 +15,7 @@ AdtStatus printDarray(darray *dArr)
         return   AllocationError;
         
     }  
-    for(i=0;i<=dArr->index;i++)
+    for(i=0;i<=dArr->index-1;i++)
     {
         printf("%d",dArr->arr[i]);
     }
@@ -81,19 +81,22 @@ AdtStatus   darrayDelete(darray *dArr,  int* _item)
 {   int* temp;
      if(dArr==NULL)
         return   AllocationError;
-      if(dArr->index<=(size_t)(0.75*((dArr->capacity)/2 ))&& dArr->capacity>dArr->initial_capacity)
+    if(dArr->index==0)
+      return   WrongIndex;
+    dArr->index--;
+      if(dArr->index==(size_t)(0.75*((dArr->capacity)/2 ))&& (dArr->capacity)>(dArr->initial_capacity))
     {
         temp=realloc(dArr->arr,(dArr->capacity/2)*sizeof(int));
-    }
-    if(temp!=NULL)
-    {
-        dArr->arr=temp;
-        dArr->capacity=dArr->capacity/2;
-    }
-    else 
-        return   AllocationError;
+    
+        if(temp!=NULL)
+        {
+            dArr->arr=temp;
+            dArr->capacity=dArr->capacity/2;
+        }
+        else 
+            return   AllocationError;
+      }
     *_item=dArr->arr[dArr->index];
-    dArr->index--;
     return  OK;
 }
 
@@ -133,7 +136,7 @@ AdtStatus darraySort(darray *dArr)
         return   AllocationError;
     while(1)
     {   swap=0;
-        for(i=0;i<dArr->index;i++)
+        for(i=0;i<dArr->index-1;i++)
         {     swap=0;
             if(dArr->arr[i]>dArr->arr[i+1])
             {   temp=dArr->arr[i];
