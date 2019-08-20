@@ -15,7 +15,7 @@ AdtStatus printDarray(darray *dArr)
         return   AllocationError;
         
     }  
-    for(i=0;i<=dArr->index-1;i++)
+    for(i=0;i<dArr->index;i++)
     {
         printf("%d",dArr->arr[i]);
     }
