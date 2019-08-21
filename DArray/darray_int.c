@@ -137,7 +137,7 @@ AdtStatus darraySort(darray *dArr)
     while(1)
     {   swap=0;
         for(i=0;i<dArr->index-1;i++)
-        {     swap=0;
+        {    
             if(dArr->arr[i]>dArr->arr[i+1])
             {   temp=dArr->arr[i];
                 dArr->arr[i]=dArr->arr[i+1];
