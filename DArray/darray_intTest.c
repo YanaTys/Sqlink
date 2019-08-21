@@ -37,6 +37,6 @@ int main()
     printDarray(ptrDarr);
     darraySort(ptrDarr);
     printDarray(ptrDarr);
-    
+    darrayDestroy(ptrDarr);
     return 0;
 }
