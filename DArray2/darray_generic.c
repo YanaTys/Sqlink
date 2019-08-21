@@ -8,43 +8,32 @@ struct darray
     void ** arr;
 
 };
-/*static void quicksort(darray* dArr,elementCompare comp){
-int i, j, pivot, temp;
-if(comp(first,last)<0){
-pivot=first;
-i=first;
-j=last;
-while(i<j){
-while(number[i]<=number[pivot]&&i<last)
-i++;
-while(number[j]>number[pivot])
-j--;
-if(i<j){
-temp=number[i];
-number[i]=number[j];
-number[j]=temp;
+static void quicksort(darray* dArr,int first,int last,elementCompare comp){
+int i, j,pivot;
+ void* temp;
+if(first<last){
+    pivot=first;
+    i=first;
+    j=last;
+    while(i<j){
+        while(comp(dArr->arr[i],dArr->arr[pivot])<=0&&i<last)
+        i++;
+        while(comp(dArr->arr[j],dArr->arr[pivot])>0)
+        j--;
+        if(i<j){
+            temp=dArr->arr[i];
+            dArr->arr[i]=dArr->arr[j];
+            dArr->arr[j]=temp;
+        }
+    }
+    temp=dArr->arr[pivot];
+    dArr->arr[pivot]=dArr->arr[j];
+    dArr->arr[j]=temp;
+    quicksort(dArr,first,j-1,comp);
+    quicksort(dArr,j+1,last,comp);
 }
+
 }
-temp=number[pivot];
-number[pivot]=number[j];
-number[j]=temp;
-quicksort(number,first,j-1);
-quicksort(number,j+1,last);
-}
-}
-int main(){
-int i, count, number[25];
-printf("Enter some elements (Max. - 25): ");
-scanf("%d",&count);
-printf("Enter %d elements: ", count);
-for(i=0;i<count;i++)
-scanf("%d",&number[i]);
-quicksort(number,0,count-1);
-printf("The Sorted Order is: ");
-for(i=0;i<count;i++)
-printf(" %d",number[i]);
-return 0;
-}*/
 AdtStatus printDarray(darray *dArr,elementPrinte printFunc)
 {   int i;
      if( (dArr)==NULL)
@@ -172,11 +161,11 @@ AdtStatus   darrayItemsNum(darray *dArr, int*  _numOfItems)
     
 }
 
-/*AdtStatus darraySort(darray *dArr,elementCompare comp)
+AdtStatus darraySort(darray *dArr,elementCompare comp)
 {   int i,temp,swap=0,j=0;
      if(dArr==NULL)
         return   AllocationError;
   
-    quicksort(dArr->arr, comp);
+    quicksort(dArr,0, dArr->index-1,comp);
    return  OK;  
-}*/
+}

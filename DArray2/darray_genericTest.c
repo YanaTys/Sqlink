@@ -3,6 +3,7 @@
 #include "darray_generic.h"
 void destroyPoint (void *_elem, void *context);
 void printPoint (void *_elem);
+int  comparePoints(void *_elemA, void *_elemB);
 typedef struct 
 {
     int x;
@@ -20,7 +21,7 @@ int main()
     void* pointRem;
     elementDestroy destroyFunc=destroyPoint;
     elementPrinte printeFunc=printPoint;
-    /*elementCompare comp=comparePoints;*/
+    elementCompare comp=comparePoints;
     fp=fopen("fileDet.txt","a");
     if((fp)==NULL)
     {
@@ -72,11 +73,13 @@ int main()
     printf("Enter index to set\n");
     scanf("%d",&index); 
     drraySet(ptrDarr, index,pointAdd);
+    printf("Array after set:\n");
     printDarray(ptrDarr,printeFunc);
 
    
-   /* darraySort(ptrDarr,comp);
-    printDarray(ptrDarr,printeFunc);*/
+    darraySort(ptrDarr,comp);
+    printf("Sorted array is:\n");
+    printDarray(ptrDarr,printeFunc);
    darrayDestroy(ptrDarr, destroyFunc, fp);
     fclose(fp);
     return 0;
@@ -98,9 +101,9 @@ void printPoint (void *_elem)
 
 }
 
-/*typedef int  comparePoints(void *_elemA, void *_elemB)
+ int  comparePoints(void *_elemA, void *_elemB)
 {   point_t* pA=(point_t*)_elemA;
     point_t* pB=(point_t*)_elemB;
     int res=(pA->x+pA->y)-(pB->x+pB->y);
     return res;
-}*/
+}
