@@ -10,16 +10,18 @@ int main()
    /* treeInsert(tree,5);  
     treeInsert(tree,12); 
     treeInsert(tree,3);  */
-   for(i=0;i<15;i++)
+   for(i=0;i<10;i++)
     {
-        item=(i*5)%8;
+        item=i+(3*i)%7;
         treeInsert(tree,item);   
     }
     treeWalk(tree,printTree,1);
    printf("\n search = %d \n ",treeSearh(tree,item));
    printf("\n delete = %d \n ",treeDelete(tree,4));
+   printf("\n delete = %d \n ",treeDelete(tree,6));
+   printf("\n delete = %d \n ",treeDelete(tree,15));
    treeWalk(tree,printTree,1);
-    /*treeWalk(bTree* tree,elementWalk walktFunc ,int order);*/
+    
 
     treeDestroy(tree);
     return 0;

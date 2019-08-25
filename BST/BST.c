@@ -160,63 +160,84 @@ void  treeWalk(bTree* tree,elementWalk walkFunc ,int order)
 }
 
 
-AdtStatus   treeDelete(bTree* tree,  int _item)
-{   
-   node* y;
-   node* x;
-   node* xPer;
-    if(tree==NULL)
-        return   AllocationError;
+AdtStatus   treeDelete(bTree * tree,  int _item){
+    int flag=0;
+    node * x;
+    node * deleteNode;
+    node * y=NULL;
+    if(tree==NULL){
+        return AllocationError;
+    }
     x=tree->root;
-    y=NULL;
-    xPer=NULL;
-    while(x!=NULL)
-   {   if(x->value==_item)
-            break;
-       xPer=x;
-       if(x->value>_item /*&& x->left!=NULL*/)
-         x=x->left;
-       else if(x->value<_item /*&& x->right!=NULL*/)
-        x=x->right;
-       /*else if((x->value<_item && x->right==NULL)||(x->value>_item && x->left==NULL)) 
-        x=NULL;*/
-   }
-    if(x==NULL||xPer==NULL)
-    {   return NotInTree;
+    while(x!=NULL){
+        flag=1;
+       if(x->value==_item){
+           break;
+       }
+       y=x;
+       if(_item< x->value){
+           x=x->left;
+       }else{
+           x=x->right;
+       }
     }
-    if(x->left==NULL&&x->right==NULL)
-    {   free(x);
-        return OK;}
-    else if(x->left!=NULL&&x->right!=NULL)
-    {    y=x;
-         x=x->left;
-         
-        while(x->right!=NULL)
-        {   xPer=x;
-            x=x->right;
-        }
-        y=x;
-        xPer->right=x->left;
-        free(x);
-        return OK;
-    }
-    else if(xPer->left=x)
+    
+    if((x==NULL)||((y==NULL)&&(x==NULL))){
+        return NotInTree;
+    }else if((x->left==NULL)&&(x->right==NULL)){
+           if(y->left==x){
+               y->left=NULL;
+           }else if(y->right==x)
+           {
+               y->right=NULL;
+           } 
+           free(x);
+           return OK;
+    }else if((x->left!=NULL)&&(x->right!=NULL)){
+          deleteNode=x;
+          x=x->right;
+          
+          while(x->left!=NULL){
+              y=x;
+              x=x->left;
+              
+          }
+          deleteNode->value=x->value;
+          if(x->right!=NULL){
+              y->left=x->right;
+              free(x);
+              return OK;
 
-    {   if(x->left!=NULL)
-            xPer->left=x->left;
-        else 
-             xPer->left=x->right;    
-        free(x);
-        return OK;
+          }else{
+              y->left=NULL;
+              free(x);
+              return OK;
+          }
+
+    }else{
+        if(x->left==NULL){
+            if(y->right==x){
+                y->right=x->right;
+                free(x);
+                return OK;
+            }else{
+                y->left=x->right;
+                free(x);
+                return OK;
+            }
+        }else{
+            if(y->right==x){
+                y->right=x->left;
+                free(x);
+                return OK;
+            }else{
+                y->left=x->left;
+                free(x);
+                return OK;
+            }
+        }
     }
-    else if(xPer->right=x)
-    {
-         if(x->right!=NULL)
-            xPer->right=x->right;
-        else 
-            xPer->right=x->left;    
-        free(x);
-        return OK;
-    } 
+    
 }
+
 
