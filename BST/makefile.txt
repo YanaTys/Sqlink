@@ -1,8 +1,0 @@
-﻿CFLAGS	=	-pedantic -g -Wall 
-aprog	:	BST.o BSTTest.o
-	gcc -o aprog BST.o BSTTest.o
-BST.o	:	BST.c BST.h
-	gcc -c $(CFLAGS) BST.c
-BSTTest.o : BSTTest.c BST.h
-	gcc -c $(CFLAGS) BSTTest.c
-
