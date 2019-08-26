@@ -7,19 +7,19 @@ int main()
     int i,item;
     elementWalk printTree=printFunc;
     tree=treeCreate();
-   /* treeInsert(tree,5);  
-    treeInsert(tree,12); 
-    treeInsert(tree,3);  */
-   for(i=0;i<10;i++)
-    {
-        item=i+(3*i)%7;
-        treeInsert(tree,item);   
-    }
+   
+    treeInsert(tree,10);
+    treeInsert(tree,4);
+    treeInsert(tree,8);
+    treeInsert(tree,18);
+    treeInsert(tree,20);
+    treeInsert(tree,11);
+    treeInsert(tree,7);
     treeWalk(tree,printTree,1);
    printf("\n search = %d \n ",treeSearh(tree,item));
    printf("\n delete = %d \n ",treeDelete(tree,4));
-   printf("\n delete = %d \n ",treeDelete(tree,6));
-   printf("\n delete = %d \n ",treeDelete(tree,15));
+   printf("\n delete = %d \n ",treeDelete(tree,10));
+   printf("\n delete = %d \n ",treeDelete(tree,7));
    treeWalk(tree,printTree,1);
     
 
