@@ -2,7 +2,7 @@
 #define H_HASH
 #include <stdlib.h>
 
-typedef enum  {OK,ItemAlreadyInHash ,AllocationError,NotInHash} AdtStatus; 
+typedef enum  {OK,ItemAlreadyInHash,AllocationError,NotInHash} AdtStatus; 
 
 typedef void (* elementDestroy)(void* key, void *context);
 typedef int (* elementComp) (void* keyA,void* keyB);

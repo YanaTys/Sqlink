@@ -52,15 +52,20 @@ hashTable* hashCreate(size_t size,hashFunc hFunc,elementComp compKeys )
 
 AdtStatus hashDestroy(hashTable* hTable, elementDestroy delKeyFunc, elementDestroy delItemFunc, void *context)
 {   int i=0;
+    node* next;
+    node* afterNext;
      if( hTable==NULL)
     {
         return   AllocationError;
         
     } 
     for(i=0;i<hTable->size;i++)
-    {
-        delKeyFunc(hTable->items[i]->key,context);
-        delItemFunc(hTable->items[i]->item,context);
+    {   next=hTable->items[ i ];
+        while( next != NULL&&next->key != NULL ) 
+        {   afterNext = next->next;
+            hashDelete(hTable,delKeyFunc,delItemFunc,next->key,context);
+            next =afterNext;
+        } 
     }
     free(hTable->items);
     free(hTable);
@@ -78,7 +83,7 @@ AdtStatus   hashInsert(hashTable* hTable,void* key,void* _item)
         {
             return   AllocationError;
         }
-        bin = hTable->hFunc( key )%hTable->size;
+        bin = (hTable->hFunc( key ))%(hTable->size);
         next = hTable->items[ bin ];
         while( next != NULL && next->key != NULL && hTable->compKeys( key, next->key ) > 0 ) {
                 last = next;
@@ -152,10 +157,10 @@ AdtStatus   hashDelete(hashTable* hTable,elementDestroy delKeyFunc,elementDestro
              if(next->next==NULL) 
              {  delKeyFunc(next->key,context);
                 delItemFunc(next->item,context);
-                hashTable->items[ bin ]=NULL;
+                hTable->items[ bin ]=NULL;
              }
             else if(next->next!=NULL) 
-            {   hashTable->items[ bin ]=next->next;  
+            {   hTable->items[ bin ]=next->next;  
                 delKeyFunc(next->key,context);
                 delItemFunc(next->item,context);
             } 
