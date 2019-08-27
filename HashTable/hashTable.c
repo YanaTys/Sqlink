@@ -115,7 +115,7 @@ AdtStatus   hashInsert(hashTable* hTable,void* key,void* _item)
 return OK;
 }
 
-AdtStatus  hashFind(hashTable* hTable, void* key)
+AdtStatus  hashFind(hashTable* hTable, void* key,void** item)
 
 {   int bin = 0;
     node* next=NULL;
@@ -132,7 +132,10 @@ AdtStatus  hashFind(hashTable* hTable, void* key)
     if(next==NULL)
         return NotInHash;
     else
-        return OK;
+        { *item=next->item;
+          return OK;   
+        }
+        
 }
 AdtStatus   hashDelete(hashTable* hTable,elementDestroy delKeyFunc,elementDestroy delItemFunc,void* key,void* context)
 {
@@ -150,7 +153,6 @@ AdtStatus   hashDelete(hashTable* hTable,elementDestroy delKeyFunc,elementDestro
     {   last=next;
         next = next->next;
     }
-    
     if(next!=NULL)
     {   if(last==NULL)
          {

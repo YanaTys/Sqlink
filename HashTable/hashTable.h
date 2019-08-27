@@ -18,7 +18,7 @@ AdtStatus hashDestroy(hashTable* hTable, elementDestroy delKeyFunc, elementDestr
 AdtStatus   hashInsert(hashTable* hTable,void* key,void* _item);
 AdtStatus   hashDelete(hashTable* hTable,elementDestroy delKeyFunc,elementDestroy delItemFunc,void* key,void *context);
 
-AdtStatus   hashFind(hashTable* hTable, void* key);
+AdtStatus   hashFind(hashTable* hTable, void* key,void** item);
 AdtStatus   hashForEach(hashTable* hTable, printHashFunc printFunc);
 
 #endif

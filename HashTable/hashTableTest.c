@@ -21,15 +21,19 @@ int main()
     int intPtr2;
     int intPtr3;
     int intPtr4;
+    int* findVal=NULL;
     intPtr1=7;
     intPtr2=10;
     intPtr3=17;
     intPtr4=278;
     fp=fopen("fileout.txt","w");
-    
+
     printf("insert Rony = %d \n", hashInsert( hTable,"Rony",&intPtr1));
+
     hTable=hashCreate(size,hashF,comp);
     hashForEach( hTable, printeFunc);
+
+    hashDelete(hTable,destroyKeyFunc,destroyItemFunc,"Dana",fp);
 
     hashInsert( hTable,"Dana",&intPtr1);
     hashInsert( hTable,"Yosi",&intPtr2);
@@ -38,8 +42,10 @@ int main()
     hashInsert( hTable,"Yosi",&intPtr1);
     hashForEach( hTable, printeFunc);
 
-    printf("find Moly = %d \n",hashFind(hTable, "Moly"));
-    printf("find Jessi = %d \n",hashFind(hTable, "Jessi")); 
+    printf("find Jessi = %d \n",hashFind(hTable, "Jessi",(void**)&findVal)); 
+
+    printf("find Moly = %d \n",hashFind(hTable, "Moly",(void**)&findVal));
+    printf("Moly findVal = %d \n",*findVal);
 
     hashDelete(hTable,destroyKeyFunc,destroyItemFunc,"Dana",fp);
     hashDelete( hTable,destroyKeyFunc,destroyItemFunc,"cat",fp);
@@ -48,7 +54,7 @@ int main()
     printf("hash table after deletes:\n");
     hashForEach( hTable, printeFunc);
 
-    hashDestroy(hTable,destroyKeyFunc,destroyItemFunc,fp);
+    printf("destroy = %d \n",hashDestroy(hTable,destroyKeyFunc,destroyItemFunc,fp));
     
     fclose(fp);
     return 0;
