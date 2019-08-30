@@ -15,7 +15,7 @@ int main()
     int fd1[2];  // Used to store two ends of first pipe 
     int fd2[2];  // Used to store two ends of second pipe 
   
-    char fixed_str[] = "forgeeks.org"; 
+    char fixed_str[] = "hi"; 
     char input_str[100]; 
     pid_t p; 
   
@@ -48,7 +48,7 @@ int main()
   
         // Write input string and close writing end of first 
         // pipe. 
-        write(fd1[1], input_str, strlen(input_str)+1); 
+        write(fd1[1], "hi", strlen(input_str)+1); 
         close(fd1[1]); 
   
         // Wait for child to send a string 
@@ -59,7 +59,7 @@ int main()
         // Read string from child, print it and close 
         // reading end. 
         read(fd2[0], concat_str, 100); 
-        printf("Concatenated string %s\n", concat_str); 
+        printf(" %s\n", concat_str); 
         close(fd2[0]); 
     } 
   
@@ -73,19 +73,15 @@ int main()
         read(fd1[0], concat_str, 100); 
   
         // Concatenate a fixed string with it 
-        int k = strlen(concat_str); 
-        int i; 
-        for (i=0; i<strlen(fixed_str); i++) 
-            concat_str[k++] = fixed_str[i]; 
+        
   
-        concat_str[k] = '\0';   // string ends with '\0' 
-  
+       
         // Close both reading ends 
         close(fd1[0]); 
         close(fd2[0]); 
   
         // Write concatenated string and close writing end 
-        write(fd2[1], concat_str, strlen(concat_str)+1); 
+        write(fd2[1], "by", strlen(concat_str)+1); 
         close(fd2[1]); 
   
         exit(0); 
