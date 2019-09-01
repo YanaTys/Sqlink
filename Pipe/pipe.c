@@ -81,7 +81,7 @@ int main()
         close(fd2[0]); 
   
         // Write concatenated string and close writing end 
-        write(fd2[1], "by", strlen(concat_str)+1); 
+        write(fd2[1], "bye", strlen(concat_str)+1); 
         close(fd2[1]); 
   
         exit(0); 
