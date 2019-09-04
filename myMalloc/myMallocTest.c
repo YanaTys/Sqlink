@@ -35,10 +35,10 @@ int main()
    printf("pToMalloc= %p\n",pToMalloc);
    printf("pToMalloc2= %p\n",pToMalloc2);
     
-   memFree( pToMalloc,bufSize);
+   memFree( myBufAfterInit,pToMalloc2,bufSize);
    
    printf("isFree after free= %d\n",isFree((int* ) (pToMalloc-4)));
-  /* for(i=0;i<=bufSize;i++)
+   /*for(i=0;i<=bufSize;i++)
     {
       printf(" %d ",myBufAfterInit[i]);  
     }

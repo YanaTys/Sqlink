@@ -83,20 +83,26 @@ void* memAlloc(char* myBuf,  int bufSize, int mallocSize )
     return NULL;
 }
 
-void memFree(char* pToFree,int bufSize)
+void memFree(char * myBuf,char* pToFree,int bufSize)
 {   int current;
-   
+    int i=0;
     int* pi=(int*)pToFree;
    
-    setFree((pi-1));
-   
     current=*(pi-1);
-    
-    while(current<=bufSize && isFree((int*)(pi+*pi))==0)
+   for(i=0;i<bufSize;i++)
+   {
+       if(myBuf[(char)i]==*(pToFree))
+       {
+           break;
+       }
+   }
+   i=i-1;
+   setFree((int*)&(myBuf[(char)i]));
+   while(current<=bufSize && isFree((int*)(pi+*pi))==0)
     {
         *pToFree=*pToFree+*(pi+*pi);
         pi=pi+*pi;
-        current = current +*((int*)pi);
+        current = current +*(pi);
     }
 
 
