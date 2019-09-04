@@ -50,41 +50,43 @@ void* memInit(char* myBuf, int* size)
 }
 
 void* memAlloc(char* myBuf,  int bufSize, int mallocSize )
-{   char i=0;
-    int* pi;
+{   char i=0,j=0;
+    int* pi=(int*)&myBuf[0];
 
     if(mallocSize%4!=0)
         mallocSize=mallocSize+(4-mallocSize%4);
-    while(i<bufSize)
-    {   pi=(int*)&myBuf[i];
-        if(isFree(pi)==0)
+    pi=(int*)&myBuf[i];
+   for(i=0;i<bufSize/4;)
+    {   
+        if(isFree(pi+i)==0)
         {
-            if(mallocSize+4<(*pi))
+            if(mallocSize+4<pi[i])
             {
-                return split(pi,mallocSize);
+                return split(&pi[i],mallocSize);
 
             }
-             else if(mallocSize+4==(*pi))
-            {
-                return pi+1;
+             else if(mallocSize+4==pi[i])
+            {   setOcc(&pi[i]);
+                return &pi[i+1];
             }
              else 
              {
-                    i=i+(*pi/4);
+                    i=i+(pi[i]/4);
              }
 
         }
         else 
-        {    setFree(pi);
+        {    setFree(&pi[i]);
+             j=i;
              i=i+(*pi/4);    
-             setOcc(pi);
+             setOcc(&pi[j]);
         }
     }
     return NULL;
 }
 
 void memFree(char * myBuf,char* pToFree,int bufSize)
-{   int current;
+{   int current=0;
     int i=0;
     int* pi=(int*)pToFree;
    
@@ -102,7 +104,7 @@ void memFree(char * myBuf,char* pToFree,int bufSize)
     {
         *pToFree=*pToFree+*(pi+*pi);
         pi=pi+*pi;
-        current = current +*(pi);
+       current = current +*(pi);
     }
 
 
