@@ -23,15 +23,15 @@ int main()
    p=(int *)&myBufAfterInit[0];
    printf("bufSize= %d\n",bufSize);
    pToMalloc =(char*)memAlloc( myBufAfterInit, bufSize, 4 );
-    for(i=0;i<=bufSize;i++)
+    for(i=0;i<=bufSize/4;i++)
     {
-      printf(" %d ",myBufAfterInit[i]);  
+      printf(" %d ",p[i]);  
     }
     printf("\n");  
    pToMalloc2 =(char*)memAlloc( myBufAfterInit, bufSize, 5);
-    for(i=0;i<=bufSize;i++)
+    for(i=0;i<=bufSize/4;i++)
     {
-      printf(" %d ",myBufAfterInit[i]);  
+      printf(" %d ",p[i]);  
     }
     printf("\n");  
    printf("pToMalloc= %p\n",pToMalloc);
