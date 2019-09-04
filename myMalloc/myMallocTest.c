@@ -12,21 +12,37 @@ int isFree(int*  pi)
 
 int main()
 {   char* myBufAfterInit ;
-    int bufSize=20;
-    int mallocSize=4 ;
+    int bufSize=40;
+    /*int mallocSize=4 ;*/
     char* pToMalloc;
+    char* pToMalloc2;
+    char* pToMalloc3;
     int i;
    myBufAfterInit=(char*)memInit(myBuf, &bufSize);
    printf("bufSize= %d\n",bufSize);
-   pToMalloc =(char*)memAlloc( myBufAfterInit, bufSize, mallocSize );
-
+   pToMalloc =(char*)memAlloc( myBufAfterInit, bufSize, 4 );
+    for(i=0;i<=bufSize;i++)
+    {
+      printf(" %d ",myBufAfterInit[i]);  
+    }
+    printf("\n");  
+   pToMalloc2 =(char*)memAlloc( myBufAfterInit, bufSize, 5);
+    for(i=0;i<=bufSize;i++)
+    {
+      printf(" %d ",myBufAfterInit[i]);  
+    }
+    printf("\n");  
    printf("pToMalloc= %p\n",pToMalloc);
-
-
+   printf("pToMalloc2= %p\n",pToMalloc2);
+    
    memFree( pToMalloc,bufSize);
    
    printf("isFree after free= %d\n",isFree((int* ) (pToMalloc-4)));
-  
+  /* for(i=0;i<=bufSize;i++)
+    {
+      printf(" %d ",myBufAfterInit[i]);  
+    }
+    printf("\n"); */
 
 return 0;
 

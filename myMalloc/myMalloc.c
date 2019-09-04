@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "myMalloc.h"
+#include <stdio.h>
 static void setFree(int* pi)
 {
     *pi=*pi&0x7fffffff;
@@ -19,9 +20,9 @@ static int isFree(int*  pi)
 }
 
 static char* split(int *pi, int mallocSize)
-{   *pi=mallocSize+4;
-    *(pi+mallocSize/4+1)=*pi-mallocSize+4;
+{   int  sizeOfPi=*pi;
     *pi=mallocSize+4;
+    *(pi+mallocSize/4+1)=sizeOfPi-mallocSize-4;
      setOcc(pi);
      setFree(pi+mallocSize/4+1);
      return (char*)pi+1;
@@ -58,35 +59,39 @@ void* memAlloc(char* myBuf,  int bufSize, int mallocSize )
     {   pi=(int*)&myBuf[i];
         if(isFree(pi)==0)
         {
-            if(mallocSize+4<*pi)
+            if(mallocSize+4<(*pi))
             {
                 return split(pi,mallocSize);
 
             }
-             if(mallocSize=*pi-4)
+             else if(mallocSize+4==(*pi))
             {
                 return pi+1;
             }
-             else if(mallocSize+4<*pi)
+             else 
              {
                     i=i+(*pi/4);
              }
 
         }
         else 
-        {
+        {    setFree(pi);
              i=i+(*pi/4);    
+             setOcc(pi);
         }
     }
     return NULL;
 }
 
 void memFree(char* pToFree,int bufSize)
-{
-    char i=0;
-    char* pi=pToFree;
-    int current=*((int*)pi);
-    setFree((int*)pToFree);
+{   int current;
+   
+    int* pi=(int*)pToFree;
+   
+    setFree((pi-1));
+   
+    current=*(pi-1);
+    
     while(current<=bufSize && isFree((int*)(pi+*pi))==0)
     {
         *pToFree=*pToFree+*(pi+*pi);
