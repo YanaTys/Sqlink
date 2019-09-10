@@ -29,8 +29,13 @@ void* producer(void * arg)
             error=enqueue(que, &item); 
             pthread_mutex_unlock(&(que->lock));
             if(error==1)
-                printf("%d\n",item);
-            sem_post(&que->full);
+            {    printf("%d\n",item);
+                 sem_post(&que->full);
+               
+            }
+            
+
+           
         }
    
 }
@@ -70,6 +75,7 @@ int main ()
     for(i=0;i<PRONUM;i++)
     {
          pthread_create(&produsers[i],NULL,producer,&i);
+          
          sem_wait(&semofor);
     }
    for(j=0;j<CONSNUM;j++)
