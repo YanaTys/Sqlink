@@ -17,13 +17,14 @@ class memPool_t: public memManager_t{
             }
       };
       memPool_t(){
-         memPage_t * page=new page_t;
-         v.insert(v.end(), page);	
+         memPage_t * page=new memPage_t;
+         v.insert(v.end(), page);
+         	
           
       }
      
-    virtual size_t readM(void *k,size_t nOfByte)const;
-    virtual size_t readM(void *k,size_t nOfByte,size_t pos)const;
+    virtual size_t readM(void *k,size_t nOfByte);
+    virtual size_t readM(void *k,size_t nOfByte,size_t pos);
     virtual size_t writeM(const void * k,size_t nOfByte);
     virtual size_t writeM(const void * k,size_t nOfByte,size_t pos);
     
@@ -31,9 +32,9 @@ class memPool_t: public memManager_t{
 
 
   private:
-     vector<Page_t*> v; 
+     vector<memPage_t*> v; 
      memPool_t(const  memPool_t & mem){};
      memPool_t& operator= (const  memPool_t& mem){};
      
 
-}
+};

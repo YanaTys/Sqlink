@@ -13,7 +13,7 @@ INCLUDES =
 LIBS =-lm
 
 # define the C source files
-SRCS = memPage.cpp test.cpp
+SRCS = memPage.cpp test.cpp memPool.cpp
 
 # define the C object files 
 #

@@ -2,29 +2,50 @@
 #include <string.h>
 #include "memPage.h"
 #include "memoryMan.h"
+#include "memPool.h"
 
+void memTest(memManager_t* mm)
+{
+  int k=4;
+  long z=6;
+  int w=8;
+  cout<<"the size actual :"<<mm->getActualSize()<<endl;
+  mm->writeM(&k,sizeof(int));
+  mm->readM(&k,sizeof(int),0);
+  cout<<"the number"<<k<<endl;
+  cout<<"the index:"<<mm->getCurrent()<<endl;
+  mm->writeM(&z,sizeof(long));
+  mm->readM(&z,sizeof(long),3);
+  cout<<"the number"<<z<<endl;
+  cout<<"the index:"<<mm->getCurrent()<<endl;
+  mm->writeM(&w,sizeof(int));
+  mm->readM(&w,sizeof(int),5);
+  cout<<"the number"<<w<<endl;
+  cout<<"the index:"<<mm->getCurrent()<<endl;
+  try{
+      mm->setCurrent(10);
+     }catch(...)
+     {
+       cout<<"can't setCurrent:"<<endl; 
+     };
+}
 
 int main(){
-
-  memPage_t p;
-  int k=4;
-  int z=4;
-  int w=8;
-  cout<<"the size actual :"<<p.getActualSize()<<endl;
-  cout<<"the size capacity :"<<p.getCapacity()<<endl;
-  p.writeM(&k,sizeof(int));
-  p.readM(&k,sizeof(int),0);
-  cout<<"the number"<<k<<endl;
-  cout<<"the index:"<<p.getCurrent()<<endl;
-  p.writeM(&z,sizeof(int));
-  p.readM(&z,sizeof(int),4);
-  cout<<"the number"<<z<<endl;
-  cout<<"the index:"<<p.getCurrent()<<endl;
-  p.writeM(&w,sizeof(int),2);
-  p.readM(&w,sizeof(int),2);
-  cout<<"the number"<<w<<endl;
-  cout<<"the index:"<<p.getCurrent()<<endl;
+memManager_t* mm;
+int ans;
+  cout<<"enter 1 to pool test or 2 to page test"<<endl;
+  cin>>ans;
+  if(ans==1)
+    mm=new  memPool_t;
+  else if(ans==2)
+    mm=new  memPage_t;
+  else 
+    cout<<"error:"<<endl;
+    try{
+        memTest(mm);
+      }catch (std:: bad_alloc){
+        cout<<"bad alloc:"<<endl; 
+      };
 
   
-
 }   

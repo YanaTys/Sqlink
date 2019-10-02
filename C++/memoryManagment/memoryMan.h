@@ -4,18 +4,20 @@
 using namespace std;
 class memManager_t{
   public:
+   virtual ~memManager_t(){};
     memManager_t(){
         m_actualSize=0;
         m_current=0;
         
     };
     size_t getCurrent()const{return m_current;};
-    bool setCurrent(size_t cur){
+   void setCurrent(size_t cur){
+    
         if(m_actualSize>=cur){
              m_current=cur;
-             return true;
         }
-        return false;
+        else
+          throw  -1;
     };
     bool isEmpty(){
        if(m_actualSize!=0){
@@ -24,14 +26,14 @@ class memManager_t{
        return true;
     }
     size_t getActualSize()const{return m_actualSize;};
-    virtual size_t readM(void *k,size_t nOfByte){return 0;};
-    virtual size_t readM(void *k,size_t nOfByte,size_t pos){return 0;};
-    virtual size_t writeM(const void * k,size_t nOfByte){return 0;};
-    virtual size_t writeM(const void * k,size_t nOfByte,size_t pos){return 0;};
+    virtual size_t readM(void *k,size_t nOfByte)=0;
+    virtual size_t readM(void *k,size_t nOfByte,size_t pos)=0;
+    virtual size_t writeM(const void * k,size_t nOfByte)=0;
+    virtual size_t writeM(const void * k,size_t nOfByte,size_t pos)=0;
     
     
   protected:
-    virtual ~memManager_t(){};
+      
     void setActualSize(size_t actualSize){m_actualSize=actualSize;};
 
     

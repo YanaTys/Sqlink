@@ -14,8 +14,9 @@ size_t memPage_t::readM(void *k,size_t nOfByte){
 }
 
 size_t memPage_t::readM(void *k,size_t nOfByte,size_t pos)
-  {
-    
+  { if(pos > this->getActualSize())
+      return 0;
+
   if(pos + nOfByte > this->getActualSize()){
 
     nOfByte=this->getActualSize()-pos;
@@ -48,7 +49,7 @@ size_t memPage_t::writeM(const void * k,size_t nOfByte)
 }
 
 size_t memPage_t::writeM(const void * k,size_t nOfByte,size_t pos){
- if(pos-1>this->getActualSize()){
+ if(pos-1>this->getActualSize()&&pos!=0){
    return 0;
  } 
    if(pos + nOfByte > this->m_capacity){
@@ -57,7 +58,6 @@ size_t memPage_t::writeM(const void * k,size_t nOfByte,size_t pos){
    }
    else if(pos+nOfByte>this->getActualSize()){
         this->setActualSize(pos+nOfByte);
-
 
    }
   memcpy(this->m_p+pos,k,nOfByte);
