@@ -9,6 +9,7 @@ void memTest(memManager_t* mm)
   int k=4;
   long z=6;
   int w=8;
+  size_t num=-10;
   cout<<"the size actual :"<<mm->getActualSize()<<endl;
   mm->writeM(&k,sizeof(int));
   mm->readM(&k,sizeof(int),0);
@@ -23,11 +24,11 @@ void memTest(memManager_t* mm)
   cout<<"the number"<<w<<endl;
   cout<<"the index:"<<mm->getCurrent()<<endl;
   try{
-      mm->setCurrent(10);
-     }catch(...)
+        mm->setCurrent(num);
+     }catch(int err)
      {
        cout<<"can't setCurrent:"<<endl; 
-     };
+     }
 }
 
 int main(){
@@ -45,7 +46,7 @@ int ans;
         memTest(mm);
       }catch (std:: bad_alloc){
         cout<<"bad alloc:"<<endl; 
-      };
+      }
 
   
-}   
+}  

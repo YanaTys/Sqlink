@@ -12,12 +12,12 @@ class memManager_t{
     };
     size_t getCurrent()const{return m_current;};
    void setCurrent(size_t cur){
-    
+        int err=-1;
         if(m_actualSize>=cur){
              m_current=cur;
         }
-        else
-          throw  -1;
+        else 
+          throw (err);
     };
     bool isEmpty(){
        if(m_actualSize!=0){
