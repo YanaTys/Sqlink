@@ -14,10 +14,11 @@ class tException_t {
         this->m_fileName=fileName;
         this->m_line=line;
         this->m_desc=desc;
+       
 
     };
-    tException_t(const  tException_t & excep){};
-    tException_t& operator= (const  tException_t& excep){};
+    /*tException_t(const  tException_t & excep){};
+    tException_t& operator= (const  tException_t& excep){};*/
 
     const TOBJ& getObj()const{ return this->m_obj;};
     const string& getFileName()const{return this->m_fileName;};
