@@ -64,14 +64,14 @@ void  removeAndDelAllElem ()
         {   cont.erase(itr);
             delete *itr;
             itr=cont.begin();
-        }
+        }T
 };
 T*  operator[] (unsigned int i)
 {   vector<T*> v;
     int j=0;
     itr=cont.begin();
     if(typeid(v)==typeid(cont))
-        return (constItr=cont[i]);
+        return (*(vector<T*>*)&cont)[i];
    else 
     {
     if(i<cont.size())
@@ -92,4 +92,4 @@ T*  operator[] (unsigned int i)
     constIter_t constItr;
     C cont;
 
-};
+}; 
