@@ -70,10 +70,10 @@ T*  operator[] (unsigned int i)
 {   vector<T*> v;
     int j=0;
     itr=cont.begin();
-    /*if(typeid(v)==typeid(cont))
-        return cont[i];
-    else 
-    {*/
+    if(typeid(v)==typeid(cont))
+        return (constItr=cont[i]);
+   else 
+    {
     if(i<cont.size())
         {for(j=0;j<i;j++)
             itr++;
