@@ -36,8 +36,8 @@ class meeting_t{
 
 
     private:
-    meeting_t(const meeting_t & meet){};
-    meeting_t& operator=(const meeting_t & meet){};
+    meeting_t(const meeting_t & meet);
+    meeting_t& operator=(const meeting_t & meet);
     float m_begin;
     float m_end;
     string m_subj;
