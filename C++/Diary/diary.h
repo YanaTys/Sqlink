@@ -55,7 +55,7 @@ class diary_t
        }
        return false;
       };
-        meeting_t* findM(const float& fBegin)
+        meeting_t* findM const(const float& fBegin)
         {  cItr=m.find(fBegin);
           if(cItr==m.end())
                 return 0;
@@ -85,7 +85,8 @@ class diary_t
         typedef typename map<float ,meeting_t*>::const_iterator cIter_t;
         iter_t itr;
         cIter_t cItr;
-        
+        diary_t(const diary_t& dr){};
+        diary_t& operator=(const diary_t& dr){};
 
 
 };
