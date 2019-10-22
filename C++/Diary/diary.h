@@ -85,8 +85,8 @@ class diary_t
         typedef typename map<float ,meeting_t*>::const_iterator cIter_t;
         iter_t itr;
         cIter_t cItr;
-        diary_t(const diary_t& dr){};
-        diary_t& operator=(const diary_t& dr){};
+        diary_t(const diary_t& dr);
+        diary_t& operator=(const diary_t& dr);
 
 
 };
