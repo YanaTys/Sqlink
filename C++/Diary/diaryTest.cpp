@@ -43,13 +43,14 @@ void testFunc(diary_t& dr)
                   cin>>endH;
                   cout<<"enter subject of meeting"<<endl;
                   cin>>subj;
+                  meeting_t * meetP;
                   try{
-                    meeting_t * meetP = new meeting_t(beginH,endH,subj);
+                     meetP = new meeting_t(beginH,endH,subj);
                     }catch(int i){
                       cout<<"cant create this meeting!"<<endl;
                       break;
                     }
-                  meeting_t * meetP = new meeting_t(beginH,endH,subj);
+                  /*meeting_t * meetP = new meeting_t(beginH,endH,subj);*/
                   ans=dr.insert(meetP);
                   if(ans==true)
                       cout<<"the insert was succsessful"<<endl;
