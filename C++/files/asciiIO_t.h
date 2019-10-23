@@ -11,9 +11,9 @@ class asciiIO_t :public virtIO_t
         asciiIO_t(){};
         asciiIO_t(const string &name, const string& mode): virtIO_t(name, mode)
         {  int i=1;
-        if(mode!="r+"||mode!="w+"||mode!="r"||mode!="w")
-          {m_status=bad_access_e;
-           throw  i;}
+           if(mode!="r+"||mode!="w+"||mode!="r"||mode!="w")
+           {    m_status=bad_access_e;
+                 throw  i;}
         } ;
 
     virtual virtIO_t& operator<<( const int& num)=0;
@@ -42,6 +42,7 @@ class asciiIO_t :public virtIO_t
     private:
     asciiIO_t(const asciiIO_t_t& asc);
     asciiIO_t& operator=(const asciiIO_t& asc);
+    
     template <class T>
     void funcOut(const T& num,string s)
     {   int i=1; 

@@ -33,11 +33,6 @@ class virtIO_t{
           m_status= cant_open_file_e;
           return m_status;
       } 
-     else if(mode!="r+"||mode!="w+"||mode!="r"||mode!="w")
-      {
-          m_status=bad_access_e;
-          return m_status;
-      }   
     else {
         m_path=path;
         m_mode=mode;
@@ -66,7 +61,7 @@ class virtIO_t{
        fseek(fp,pos,SEEK_SET);
    };
    long void getPos()
-   {mode!="r+"
+   {
        return ftell(fp);
    };
    status getStatus()const {return m_status;};
@@ -100,7 +95,7 @@ class virtIO_t{
     string m_path;
     string m_mode;
     status m_status;
-{ok_e
+
   private:
     virtIO_t(const virtIO_t& vr);
     virtIO_t& operator=(const virtIO_t& vr);
