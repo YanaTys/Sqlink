@@ -46,17 +46,29 @@ class binIO_t :public virtIO_t
     };
     
     void operator,(int len)
-     {
+     {  int i=1;
          if(m_leftShift!=NULL)
-         {
-             fwrite(m_leftShift,len,1,fp);
-              m_leftShift=0;
+         {    if(this->getMode()!="rb")
+                {fwrite(m_leftShift,len,1,fp);
+                m_leftShift=0;}
+             else if(this->getMode()=="rb")
+            {
+                this->SetStatus(writeErr_e);
+                throw  i;
+            }    
              
          }
          else if(m_rightShift!=NULL)
-         {
-             fread(m_rightShift,len,1,fp);
-              m_rightShift=0;
+         {   if(this->getMode()!="wb")
+                {
+                   fread(m_rightShift,len,1,fp);
+                    m_rightShift=0; 
+                }
+              else if(this->getMode()=="wb")
+              {
+                this->SetStatus(readErr_e);
+                throw  i;
+              }    
              
          }
      }; 
@@ -72,7 +84,7 @@ class binIO_t :public virtIO_t
     {   int i=1; 
         if(this->getStatus()==cant_open_file_e)
             throw  i;
-        else if(this->getMode()=="r")
+        else if(this->getMode()=="r"||this->getMode()=="rb")
         {
             this->SetStatus(writeErr_e);
             throw  i;
@@ -86,7 +98,7 @@ class binIO_t :public virtIO_t
     {    int i=1;   
         if(this->getStatus()==cant_open_file_e)
             throw  i;
-        else if(this->getMode()=="w")
+        else if(this->getMode()=="w"||this->getMode()=="wb")
             {
                 this->SetStatus(readErr_e);
                 throw  i;

@@ -70,116 +70,121 @@ void testFunc(virtIO_t * vr)
           
           switch(choose){
               case 1: {
-                if(vr->getStatus()==0)
+                if(vr->getStatus()!=1&&vr->getStatus()!=2)
                     vr->close();
                 else 
-                    cout<<"null pointer!"<<endl;
+                    cout<<"status eror!"<<endl;
                 break;
               
               }
                case 2: {
-                if(vr->getStatus()==0)
+                if(vr->getStatus()!=1&&vr->getStatus()!=2)
                     {string path=vr->getPath();
                     cout<<"path= "<<path<<endl;}
                 else 
-                    cout<<"null pointer!"<<endl;
+                    cout<<"status eror!"<<endl;
                 break;
                
                 }
                 
                 case 3: {
-                 if(vr->getStatus()==0)
+                 if(vr->getStatus()!=1&&vr->getStatus()!=2)
                 {   string mode=vr->getMode();
                     cout<<"mode= "<<mode<<endl;}
                 else 
-                    cout<<"null pointer!"<<endl;
+                    cout<<"status eror!"<<endl;
                 break;
                 }
                 case 4: {
-                if(vr->getStatus()==0)
+                if(vr->getStatus()!=1&&vr->getStatus()!=2)
                 {long len=vr->getLength();
                     cout<<"length= "<<len<<endl;}
                 else  {
-                    cout<<"null pointer!"<<endl;}
+                    cout<<"status eror!"<<endl;}
                 break;
                 }
                  case 5: {
                   
-                if(vr->getStatus()==0)
+                if(vr->getStatus()!=1&&vr->getStatus()!=2)
                 {long pos=vr->getPos();
                     cout<<"pos= "<<pos<<endl;}
                 else 
-                    cout<<"null pointer!"<<endl;
+                    cout<<"status eror!"<<endl;
                 
                 break;
                 }
                  case 6: {
-                 if(vr->getStatus()==0)
+                 if(vr->getStatus()!=1&&vr->getStatus()!=2)
                 { long pos;
                   cout<<"enter position"<<endl;
                   cin>>pos;
                    vr->setPos(pos);}
                 else 
-                    cout<<"null pointer!"<<endl;
+                    cout<<"status eror!"<<endl;
                 
                 break;
                 }
                  case 7: {
-                if(vr->getStatus()==0)
+                if(vr->getStatus()!=1&&vr->getStatus()!=2)
                     {
                     cout<<"status= "<<vr->getStatus()<<endl;}
                 else 
-                    cout<<"null pointer!"<<endl;
+                    cout<<"status eror!"<<endl;
                     break;
                 }
               
                  case 8: {
-               if(vr->getStatus()==0){
+               if(vr->getStatus()!=1&&vr->getStatus()!=2){
                    int num;
                    cout<<"enter num"<<endl;
                    cin>>num;
                    *vr<<num;
                 }else{
-                    cout<<"null pointer! "<<endl;
+                    cout<<"status eror! "<<endl;
                 }
                 break;
                 }
                 case 9: {
-                if(vr->getStatus()==0){
+                if(vr->getStatus()!=1&&vr->getStatus()!=2){
                  int num=0;  
                    *vr>>num;
                     cout<<"num="<<num<<endl;
                 }else{
-                    cout<<"null pointer! "<<endl;
+                    cout<<"status eror! "<<endl;
                 }
                 break;
                 }
                  case 10: {
                 
-               if(vr->getStatus()==0){
+               if(vr->getStatus()!=1&&vr->getStatus()!=2){
+                   binIO_t* binTemp=dynamic_cast<binIO_t*>(vr);
+                if(binTemp!=0)
+                    { int num;
+                    int len;
+                    cout<<"enter num"<<endl;
+                    cin>>num;
+                    cout<<"enter len"<<endl;
+                    cin>>len; 
+                    *vr<<num,len;}
 
-                   int num;
-                   int len;
-                   cout<<"enter num"<<endl;
-                   cin>>num;
-                   cout<<"enter len"<<endl;
-                   cin>>len; 
-                   *vr<<num,len;
                 }else{
-                    cout<<"null pointer! "<<endl;
+                    cout<<"eror! "<<endl;
                 }
                 break;
                 }
                 case 11: {
-                if(vr->getStatus()==0){
-                 int num=0;
-                 int len=0;
-                 cout<<"enter len"<<endl;
-                 cin>>len;  
-                   *vr>>num,len;
-                    cout<<"num="<<num<<endl;
+                if(vr->getStatus()!=1&&vr->getStatus()!=2){
+                     binIO_t* binTemp=dynamic_cast<binIO_t*>(vr); 
+                    if(binTemp!=0)
+                    {
+                        int num=0;
+                        int len=0;
+                        cout<<"enter len"<<endl;
+                        cin>>len;  
+                        *vr>>num,len;
+                        cout<<"num="<<num<<endl;}
                 }else{
-                    cout<<"null pointer! "<<endl;
+                    cout<<"eror! "<<endl;
                 }
                 break;
                 }
