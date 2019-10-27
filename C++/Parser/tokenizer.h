@@ -22,7 +22,7 @@ class tokenizer_t
 
 	size_t GetSize() const {return m_tokens.size();};
 	
-	/*const string& GetNextToken(); */
+	
 
 	private:
 	
