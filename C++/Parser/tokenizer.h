@@ -31,7 +31,7 @@ class tokenizer_t
 
 	const string m_tokensDelimiters;
 	const string m_blankDelimiters;
-	const string m_emptyStr;
+	
 	vector<string> m_tokens;
 
 	vector<string>::iterator m_nextToken;	
