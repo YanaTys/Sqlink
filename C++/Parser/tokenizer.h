@@ -67,7 +67,7 @@ void tokenizer_t::Tokenize(const string& str)
 		}
 	}
 	
-	 m_nextToken = m_tokens.begin();
+	
 }
 
 
