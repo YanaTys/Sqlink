@@ -19,7 +19,7 @@ void tokenizer_t::Tokenize(string& str)
 	
 	m_tokens.clear();
 	
-	for(pos = 0, next = 0; next <= len ; ++next)
+	for(pos = 0, next = 0; next < len ; ++next)
 	{
 		if(isspace(str[next]))
 		{
@@ -37,10 +37,13 @@ void tokenizer_t::Tokenize(string& str)
 				m_tokens.push_back(string(str,pos,next-pos));
 			}
 			
-			m_tokens.push_back(str.substr(str[next],1));
+			m_tokens.push_back(str.substr(next,1));
 			pos = next+1;
 		}
+		
 	}
+	if(pos<next)
+			m_tokens.push_back(string(str,pos,next-pos));
 	m_nextToken=m_tokens.begin();
 
 }
