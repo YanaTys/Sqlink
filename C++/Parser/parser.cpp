@@ -32,11 +32,12 @@ void parser_t::ParseFile(const string& fileName)
 	size_t lineNum = 1;
 
 	while(1)
-	{
+	{	nextLine="";
 		getline(m_file,nextLine);
-		
-		if(!m_file.good())
-		{
+		/*cout<<nextLine<<endl;*/
+
+		if(m_file.eof())
+		{	/*cout<<"end of file"<<endl;*/
 			break;
 		}
 	
