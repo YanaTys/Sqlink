@@ -1,6 +1,6 @@
 # this is a minimal makefile for demo purposes, keep it that way...
 obj-m:=QMsg.o
-QMsg-objs:=qMassage.o
+QMsg-objs:=qMessage.o
 V?=0
 KDIR?=/lib/modules/$(shell uname -r)/build
 # in an embedded system:
@@ -17,3 +17,18 @@ modules:
 clean:
 	$(MAKE) -C $(KDIR) M=$(CURDIR) V=$(V) clean
 	rm -f *.stamp
+
+write: write.c
+	gcc -ansi -pedantic -O2 -o $@ $<
+read: read.c
+	gcc -ansi -pedantic -O2 -o $@ $<
+
+.PHONY: insmod
+insmod:
+	sudo insmod ./QMsg.ko
+	sleep 1
+	sudo chmod 666 /dev/QMsg*
+
+.PHONY: rmmod
+rmmod:
+	sudo rmmod QMsg
