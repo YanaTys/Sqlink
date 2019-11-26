@@ -32,3 +32,16 @@ insmod:
 .PHONY: rmmod
 rmmod:
 	sudo rmmod QMsg
+
+.PHONY: test
+	VARIABLE := number
+test1:
+	for number in $$(seq 1 1000);\
+	do \
+	sudo insmod QMsg.ko ;\
+	sleep 1 ;\
+	sudo chmod 666 /dev/QMsg*;\
+	(number=number+1);\
+	sudo rmmod QMsg;\
+	echo $$number;\
+	done
