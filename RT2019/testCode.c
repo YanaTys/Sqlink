@@ -20,24 +20,26 @@ void* producer(void * arg)
 {   
 	int fd ,ret,i;
 	struct mqReg reg;
+    fd=open(queuePath,O_WRONLY);
+	if(fd==-1) {
+		fprintf(stderr, "open error [%s]\n", queuePath);
+		return NULL;
+	}
 	for(i=0;i<15;i++) {
-		fd=open(queuePath,O_WRONLY);
-		if(fd==-1) {
-		    fprintf(stderr, "open error [%s]\n", queuePath);
-		    return NULL;
-		}
+		
 		reg.data="hello world";
-		reg.size=strlen(reg.data);
+		reg.size=strlen(reg.data)+1;
 		ret=ioctl(fd,MQ_SEND_MSG,&reg);
 		if(ret==-1) {
 		    fprintf(stderr, "ioctl error\n");
 		    return NULL;
 		}
-		ret=close(fd);
-		if(ret==-1) {
-		    fprintf(stderr, "close error\n");
-		    return NULL;
-		}
+	
+	}
+    ret=close(fd);
+	if(ret==-1) {
+		fprintf(stderr, "close error\n");
+		return NULL;
 	}
 	return NULL;
 }
@@ -45,34 +47,30 @@ void* producer(void * arg)
 void* consumer() 
 { int i,fd,ret;
   char* buffer=(char*)malloc(4096);
+  fd=open(queuePath,O_RDONLY);
+  if(fd==-1) {
+    fprintf(stderr, "open error\n");
+    return NULL;
+    }
      for(i=0;i<15;i++)
     {     
         
-       
-        fd=open(queuePath,O_RDONLY);
-        if(fd==-1) {
-            fprintf(stderr, "open error\n");
-        return (void*)1;
-        }
         ret=ioctl(fd, MQ_RECV_MSG, buffer);
         if(ret==-1) {
             fprintf(stderr, "ioctl error\n");
-        return (void*)1;
+            return NULL;
         }
         printf("The message is %s\n", buffer);
-         
-        ret=close(fd);
-     
-        if(ret==-1) {
-            fprintf(stderr, "close error\n");
-            return (void*)1;
-        }
-        
-       
-      
+    
     }
-   free(buffer);
-   return (void*)0;
+      
+    ret=close(fd);
+    if(ret==-1) {
+            fprintf(stderr, "close error\n");
+            return NULL;
+    }
+  free(buffer);
+   return NULL;
 
 }
 int main (int argc, char** argv)
