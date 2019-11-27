@@ -11,49 +11,45 @@
 #include <sys/ioctl.h>
 #include "qMessage.h"
 /*#define MESSEGE 5*/
-#define PRONUM 100
-#define CONSNUM 100
-
+#define PRONUM 12
+#define CONSNUM 12
+char * queuePath;
 
 
 void* producer(void * arg) 
 {   
-    int fd ,ret;
-  
-    struct mqReg reg;
-  
-     while(1)
-    {
-        fd=open("/dev/QMsg0",O_WRONLY);
-        if(fd==-1) {
-            fprintf(stderr, "open error\n");
-            return (void*)1;
-        }
-        reg.data="hello world";
-        reg.size=strlen(reg.data);
-        ret=ioctl(fd,MQ_SEND_MSG,&reg);
-        if(ret==-1) {
-            fprintf(stderr, "ioctl error\n");
-            return (void*)1;
-        }
-        /*printf("return value from ioctl was %d\n", ret);*/
-        ret=close(fd);
-        if(ret==-1) {
-            fprintf(stderr, "close error\n");
-            return (void*)1;
-        }
-     
-    }
-   
+	int fd ,ret,i;
+	struct mqReg reg;
+	for(i=0;i<15;i++) {
+		fd=open(queuePath,O_WRONLY);
+		if(fd==-1) {
+		    fprintf(stderr, "open error [%s]\n", queuePath);
+		    return NULL;
+		}
+		reg.data="hello world";
+		reg.size=strlen(reg.data);
+		ret=ioctl(fd,MQ_SEND_MSG,&reg);
+		if(ret==-1) {
+		    fprintf(stderr, "ioctl error\n");
+		    return NULL;
+		}
+		ret=close(fd);
+		if(ret==-1) {
+		    fprintf(stderr, "close error\n");
+		    return NULL;
+		}
+	}
+	return NULL;
 }
 
 void* consumer() 
-{ 
-    while (1) 
+{ int i,fd,ret;
+  char* buffer=(char*)malloc(4096);
+     for(i=0;i<15;i++)
     {     
-         int fd, ret;
-        char* buffer=(char*)malloc(4096);
-        fd=open("/dev/QMsg0",O_RDONLY);
+        
+       
+        fd=open(queuePath,O_RDONLY);
         if(fd==-1) {
             fprintf(stderr, "open error\n");
         return (void*)1;
@@ -64,40 +60,53 @@ void* consumer()
         return (void*)1;
         }
         printf("The message is %s\n", buffer);
+         
         ret=close(fd);
+     
         if(ret==-1) {
             fprintf(stderr, "close error\n");
             return (void*)1;
         }
+        
+       
+      
     }
+   free(buffer);
+   return (void*)0;
+
 }
-int main ()
+int main (int argc, char** argv)
 { 
     pthread_t produsers [PRONUM];
     pthread_t consumers [CONSNUM];
-   
-    int i ,j,w,z;
-
+     int i ,j,w,z;
+    if(argc>1) {
+	    queuePath=argv[1];
+    } else {
+	    queuePath="/dev/QMsg0";
+    }
+    
     for(i=0;i<PRONUM;i++)
     {
          pthread_create(&produsers[i],NULL,producer,&i);
-          
-     
     }
+ 
+
    for(j=0;j<CONSNUM;j++)
     {
         pthread_create(&consumers[j],NULL,consumer,&j);
     }
-    
-    for(w=1;w<=PRONUM;w++)
+  
+    for(w=0;w<PRONUM;w++)
     {
         pthread_join(produsers[w],NULL);
     }
-   
+  
 
-    for(z=1;z<=CONSNUM;z++)
+    for(z=0;z<CONSNUM;z++)
     {
         pthread_join(consumers[z],NULL);
-    }
+    } 
+ 
    return 0;
 }

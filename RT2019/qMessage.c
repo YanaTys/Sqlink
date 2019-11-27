@@ -24,10 +24,10 @@ struct messageQu {
 	size_t size;
 	size_t capacity;
 	struct device *mq_device;
-	wait_queue_head_t smi_busy_wait;
+	wait_queue_head_t read_queue;
+	wait_queue_head_t write_queue;
 	struct mutex lock;
 };
-	
 static struct messageQu * m_queues;
 static int first_minor;
 static struct class *my_class;
@@ -39,13 +39,32 @@ struct list_struct {
 	size_t size;
 };
 
+static int my_list_not_empty(struct messageQu * m_queue)
+{	int ret;
+	mutex_lock(&m_queue->lock);
+	ret=!list_empty(&m_queue->list);
+	if(!ret)
+		mutex_unlock(&m_queue->lock);
+	return ret;
+}
+
+static int my_list_has_space(struct messageQu * m_queue)
+{	int ret;
+	mutex_lock(&m_queue->lock);
+	ret=m_queue->size<m_queue->capacity;
+	if(!ret)
+		mutex_unlock(&m_queue->lock);
+	return ret;
+}
+
 static inline void m_queue_ctor(struct messageQu* m_queue)
 {
 	m_queue->size = 0;
 	m_queue->capacity = 100;
 	INIT_LIST_HEAD(&m_queue->list);
 	m_queue->mq_device=NULL;
-	init_waitqueue_head(&m_queue->smi_busy_wait);
+	init_waitqueue_head(&m_queue->read_queue);
+	init_waitqueue_head(&m_queue->write_queue);
 	mutex_init(&m_queue->lock);
 }
 
@@ -68,7 +87,7 @@ static int queue_open(struct inode *inode, struct file *filp)
 
 static long queue_ioctl( struct file *filp, unsigned int op, unsigned long buffer_usr)
 {
-	struct messageQu * mQueues =filp->private_data;
+	struct messageQu * mQueue=filp->private_data;
 	int ret;
 	char * buffer;
 	struct mqReg reg;
@@ -77,7 +96,11 @@ static long queue_ioctl( struct file *filp, unsigned int op, unsigned long buffe
 	int size;
 	switch(op){
 		case MQ_SEND_MSG:
-			wait_event_interruptible(mQueues->smi_busy_wait,mQueues->size<mQueues->capacity);
+			ret=wait_event_interruptible(mQueue->write_queue, my_list_has_space(mQueue));
+			if(ret==-ERESTARTSYS) {
+				/* no need to release mutex in this path */
+				return ret;
+			}
 			ret = copy_from_user(&reg,regP,sizeof(reg));
 			if(ret)
 			{
@@ -103,31 +126,23 @@ static long queue_ioctl( struct file *filp, unsigned int op, unsigned long buffe
 				ret = PTR_ERR(new_list_struct);
 				return ret;
 			}
-
 			new_list_struct->data=buffer;
 			new_list_struct->size=reg.size;
-			ret=mutex_lock_interruptible(&mQueues->lock);
-			if(ret)
-			{
-				pr_err("%s: mutex\n", THIS_MODULE->name);
-			}
-			list_add_tail(&new_list_struct->node,&mQueues->list);
-			mQueues->size++;
+			list_add_tail(&new_list_struct->node,&mQueue->list);
+			mQueue->size++;
 			pr_info("%s: added element to list\n", THIS_MODULE->name);
-			mutex_unlock(&mQueues->lock);
-			wake_up_interruptible(&mQueues->smi_busy_wait);
+			mutex_unlock(&mQueue->lock);
+			wake_up_interruptible(&mQueue->read_queue);
 			return reg.size;
-			break;
 		case MQ_RECV_MSG:
-			
-			wait_event_interruptible(mQueues->smi_busy_wait,list_empty(&mQueues->list)==0);
-			ret=mutex_lock_interruptible(&mQueues->lock);
-			if(ret)
+			ret=wait_event_interruptible(mQueue->read_queue, my_list_not_empty(mQueue));
+			if(ret==-ERESTARTSYS)
 			{
-				pr_err("%s: mutex\n", THIS_MODULE->name);
+				/* no need to release the mutex in this path*/
+				return ret;
 			}
-			new_list_struct=list_entry((&mQueues->list)->prev,struct list_struct,node);
-			list_del_init((&mQueues->list)->prev);
+			new_list_struct=list_entry((&mQueue->list)->prev,struct list_struct,node);
+			list_del_init((&mQueue->list)->prev);
 			size=new_list_struct->size;
 			ret=copy_to_user((char*)buffer_usr,new_list_struct->data,new_list_struct->size);
 			if(ret)
@@ -135,13 +150,12 @@ static long queue_ioctl( struct file *filp, unsigned int op, unsigned long buffe
 				pr_err("copy from user\n");
 				return ret;
 			}
-			mutex_unlock(&mQueues->lock);
+			mutex_unlock(&mQueue->lock);
 			kfree(new_list_struct->data);
 			kfree(new_list_struct);
-			mQueues->size--;
-			wake_up_interruptible(&mQueues->smi_busy_wait);
+			mQueue->size--;
+			wake_up_interruptible(&mQueue->write_queue);
 			return size;
-			break;
 		default:
 			return -ENOTTY;
 	}
@@ -150,12 +164,12 @@ static long queue_ioctl( struct file *filp, unsigned int op, unsigned long buffe
 
 /*static int queue_release(struct inode *inode, struct file *filp)
 {mi_busy_wait
-	struct messageQu *m_queues;
+	struct messageQu *m_queue;
 	pipe = (struct messageQu*)(filp->private_data);
 	pipe_lock(pipe);
 	if (filp->f_mode & FMODE_READ)
 		pipe->readers--;
-	if (filp->f_mode & FMODE_WRITE),mQueues->size==0
+	if (filp->f_mode & FMODE_WRITE),mQueue->size==0
 		pipe->writers--;
 
 	if (filp->f_mode & FMODE_WRITE) {

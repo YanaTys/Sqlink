@@ -10,6 +10,10 @@ KDIR?=/lib/modules/$(shell uname -r)/build
 # You could also use W=2 and W=3 for more warnings but most kernel headers
 # fail those...
 W?=1
+
+.PHONY: all
+all: modules write read testCode
+
 .PHONY: modules
 modules:
 	$(MAKE) -C $(KDIR) M=$(CURDIR) V=$(V) W=$(W) modules
@@ -17,11 +21,14 @@ modules:
 clean:
 	$(MAKE) -C $(KDIR) M=$(CURDIR) V=$(V) clean
 	rm -f *.stamp
+	rm -f write read testCode
 
 write: write.c
-	gcc -ansi -pedantic -O2 -o $@ $<
+	gcc -Wall -Werror -ansi -pedantic -O2 -o $@ $<
 read: read.c
-	gcc -ansi -pedantic -O2 -o $@ $<
+	gcc -Wall -Werror -ansi -pedantic -O2 -o $@ $<
+testCode: testCode.c
+	gcc -Wall -Werror -ansi -pedantic -O2 -o $@ $< -lpthread
 
 .PHONY: insmod
 insmod:
@@ -33,9 +40,8 @@ insmod:
 rmmod:
 	sudo rmmod QMsg
 
-.PHONY: test
-	VARIABLE := number
-test1:
+.PHONY: test_insmod_rmmod
+test_insmod_rmmod:
 	for number in $$(seq 1 1000);\
 	do \
 	sudo insmod QMsg.ko ;\
