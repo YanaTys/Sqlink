@@ -1,98 +1,103 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
-#include<semaphore.h>
-#include <pthread.h>
 #include <string.h>
-#include "produserConsumer.h"
-//#define MESSEGE 5
-#define PRONUM 10
-#define CONSNUM 15
-
-
- Queue* que;
- sem_t semofor;
-
-void* producer(void * arg) 
-{   int item= *((int* )arg);
-
-    int i=0;
-    int error;
-    sem_post(&semofor);
-    /*char item [512]="i an thread number ";
-    strcat(str,idex)*/
-     for(i=0;i<MESSEGE;i++)
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <pthread.h>
+#include <limits.h>
+#include <semaphore.h>
+#include <glib.h>
+#include <gmodule.h>
+GSList *list;
+sem_t empety;
+sem_t full;
+pthread_mutex_t lock;
+void* producerFunc(void *arg)
+{
+    int fd, ret, dataSize;
+    char *buff=malloc(20);
+    char *ptr;
+    int msgSize = 20;    
+    err(fd = open("/dev/urandom", O_RDONLY));
+    while (1)
+    {
+        dataSize = 0;
+        ptr = buff;
+        do
         {
-            
-            sem_wait(&(que->empety));
-            pthread_mutex_lock(&(que->lock));
-            error=enqueue(que, &item); 
-            pthread_mutex_unlock(&(que->lock));
-            if(error==1)
-            {    printf("%d\n",item);
-                 sem_post(&que->full);
-               
+            ret = read(fd, ptr, msgSize - dataSize);
+            if(ret<0){
+                 fprintf(stderr, "there was a pthread error %d\n", ret);
+                 exit(EXIT_FAILURE);
             }
-            
-
-           
-        }
-   
+            dataSize += ret;
+            ptr += ret;
+        } while (dataSize < msgSize);
+        sem_wait(&empety);
+        pthread_mutex_lock(&lock);
+        list = g_slist_prepend(list, buff);
+        pthread_mutex_unlock(&lock);
+        sem_post(&full);
+        sleep(1);
+    }
+    free(buff);
+    err(close(fd));
+    return NULL;
 }
-
-void* consumer() 
-{   int item,flag=0;
-    while (1) 
-    {       flag=0;
-            sem_wait(&que->full);
-            pthread_mutex_lock(&(que->lock));
-            item =*((int*)(dequeue(que))); 
-            pthread_mutex_unlock(&(que->lock));
-            if(item==-1)
-               {
-                 enqueue(que, &item);  
-                 flag=1; 
-               }
-            printf("read the messege \n");
-            sem_post(&(que->empety));
-            if(flag==1)
-            {    printf("stop\n");
-                 pthread_exit(NULL);
-                /* break;*/
-            }
-
+void* consumer(void *arg)
+{
+    int fd;
+    char *str = (char *)malloc(20);
+    GSList * temp;    
+    while(1){
+        sem_wait(&full);
+        pthread_mutex_lock(&lock);
+        temp=g_slist_last (list);
+        g_slist_delete_link (list,g_slist_last (list));
+        pthread_mutex_unlock(&lock);
+        sem_post(&empety);
+        temp->data++;    }      
+    free(str);
+    err(close(fd));
+    return NULL;
+}
+static void check_pthread_error(int ret)
+{
+    if (ret)
+    {
+        fprintf(stderr, "there was a pthread error %d\n", ret);
+        exit(EXIT_FAILURE);
     }
 }
-int main ()
-{ 
-    pthread_t produsers [PRONUM];
-    pthread_t consumers [CONSNUM];
-    void * status;
-    int i ,j,w,z,stop=-1;
-    sem_init(&semofor,0,1);
-   
-    for(i=0;i<PRONUM;i++)
-    {
-         pthread_create(&produsers[i],NULL,producer,&i);
-          
-         sem_wait(&semofor);
-    }
-   for(j=0;j<CONSNUM;j++)
-    {
-        pthread_create(&consumers[j],NULL,consumer,&j);
-    }
-    
-    for(w=0;w<PRONUM;w++)
-    {
-        pthread_join(produsers[w],NULL);
-    }
-    enqueue(que, &stop);
+int main(int argc, char **argv, char **envp)
+{
+    pthread_t producer;
+    pthread_t consumers[2];
+    cpu_set_t  mask;
+    CPU_ZERO(&mask);    
+    int ret; 
+    int i;
+    ret = pthread_create(&producer, NULL, producerFunc, NULL);
+    check_pthread_error(ret);
 
-    for(z=0;z<CONSNUM;z++)
+    sem_init(&empety,0,20);
+    sem_init(&full,0,0);
+
+    pthread_mutex_init(&lock, NULL);    
+    for (i = 0; i < 2; i++)
+    {   CPU_SET(i, &mask);
+        ret = pthread_create(&consumers[i], NULL, consumer, NULL);
+        check_pthread_error(ret);
+    }    
+    ret=pthread_join(producer, NULL);
+    check_pthread_error(ret);    
+    for ( i = 0; i < 2; i++)
     {
-        pthread_join(consumers[z],NULL);
+        ret = pthread_join(consumers[i], NULL);
+        check_pthread_error(ret);
     }
-    sem_destroy(&(que->empety));
-    sem_destroy(&(que->full));
-    destroy(que);
+    return EXIT_SUCCESS;
 }
